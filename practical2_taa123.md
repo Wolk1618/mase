@@ -45,14 +45,18 @@ bias_frac_width: 4
 
 ### 3. Implement the brute-force search as an additional search method within the system, this would be a new search strategy in MASE.
 
-I tried to implement the new search startegy in `bruteforce.py`, but I didn't succeeded.
-I thus used the optuna strategy, using the bruteforce sampler :
-```
-case "bruteforce":
-    sampler = optuna.samplers.BruteForceSampler()
-```
+I implemented the bruteforce as a new search strategy in `bruteforce.py`.
+I used the same piece of code that was in the notebook and modified it to make it work within MASE architecture.
+I created the `create_config_list` function to retrive all the possible configurations from the `search_space` object.
+Then, for each configuration, I rebuild the model using the search space and compute the metrics.
+Finally, I print the result using the combined metric used in the past question (the mean of loss, memory size and latency).
+I take the 3 minimum values of this metric and display the associated values.
+
+My code is in the `https://github.com/Wolk1618/mase` repository, on thomas branch.
 
 ### 4. Compare the brute-force search with the TPE based search, in terms of sample efficiency. Comment on the performance difference between the two search methods.
+
+For this question, I compared the TPE based search with Optuna bruteforce based search.
 
 The best metrics for bruteforce are :
 `{'loss': 1.167, 'accuracy': 0.587}`

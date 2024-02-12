@@ -85,11 +85,17 @@ class SearchStrategyOptuna(SearchStrategyBase):
     def objective(self, trial: optuna.trial.Trial, search_space):
         sampled_indexes = {}
         if hasattr(search_space, "optuna_sampler"):
+            print("hasatt")
             sampled_config = search_space.optuna_sampler(trial)
         else:
             for name, length in search_space.choice_lengths_flattened.items():
                 sampled_indexes[name] = trial.suggest_int(name, 0, length - 1)
             sampled_config = search_space.flattened_indexes_to_config(sampled_indexes)
+
+        print(sampled_config)
+        print("\n")
+        
+
 
         is_eval_mode = self.config.get("eval_mode", True)
         model = search_space.rebuild_model(sampled_config, is_eval_mode)
