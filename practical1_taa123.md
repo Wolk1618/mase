@@ -142,6 +142,3 @@ I wrote a new config file where I replaced the jsc-tiny network with the name of
 `./ch transform --config configs/examples/jsc_thomas.toml`
 
 I got the same output as in the notebook with the same layers change.
-
-### 8. Write your own pass
-

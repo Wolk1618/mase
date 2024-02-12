@@ -107,6 +107,27 @@ def calculate_modules(module, in_data, out_data):
             "input_buffer_size": input_size,
             "output_buffer_size": output_size,
         }
+    
+    elif isinstance(module, chop.passes.graph.transforms.quantize.quantized_modules.linear.LinearIntegerr):
+        # One computation per weight, for each batch element.
+
+        # Not sure which input tensor to use if there are multiple of them.
+        # TODO: check if this is correct
+        # TODO: also consider bias?
+        assert len(in_data) == 1
+        batch = in_data[0].numel() / in_data[0].shape[-1]
+
+        computations = module.weight.numel() * batch
+        backward_computations = module.weight.numel() * batch * 2
+        input_size = in_data[0].numel()
+        output_size = out_data[0].numel()
+        return {
+            "total_parameters": module.weight.numel(),
+            "computations": computations,
+            "backward_computations": backward_computations,
+            "input_buffer_size": input_size,
+            "output_buffer_size": output_size,
+        }
 
     elif isinstance(module, torch.nn.modules.activation.ReLU) or isinstance(
         module, torch.nn.modules.activation.ReLU6
@@ -129,7 +150,7 @@ def calculate_modules(module, in_data, out_data):
             "output_buffer_size": out_data[0].numel(),
         }
 
-    elif isinstance(module, torch.nn.modules.batchnorm.BatchNorm2d):
+    elif isinstance(module, torch.nn.modules.batchnorm.BatchNorm2d) or isinstance(module, torch.nn.modules.batchnorm.BatchNorm1d):
         # Accesses to E[x] and Var[x] (all channel size)
         total_parameters = 2 * module.num_features
         # (x-running_mean)/running variance

@@ -63,7 +63,6 @@ class _LinearBase(torch.nn.Linear):
             x = self.x_quantizer(x)
             w = self.w_quantizer(self.weight)
             bias = self.b_quantizer(self.bias) if self.bias is not None else None
-            print(w, bias)
             return F.linear(x, w, bias)
         
     def quantize_weights(self):
